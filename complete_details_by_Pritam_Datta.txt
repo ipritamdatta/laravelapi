@@ -1,0 +1,52 @@
+1) create a laravel project
+2) created two model Product & Review with their respective factory,migration,seeder, controller using the following
+line of code:
+
+php artisan make:model Model/Product -a
+php artisan make:model Model/Review -a
+
+3) In Api.php file defined our api route for Product and Review:
+
+Route::apiresource('/products', 'ProductController');
+Route::group(['prefix'=>'products'],function(){
+    Route::apiresource('/{product}/reviews','ReviewController'); // /products/11/reviews
+    
+});
+
+4) you can see the routes in the command prompt using:
+
+php artisan route:list
+
+5) migration of product:
+
+
+public function up()
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->text('detail');
+            $table->integer('price');
+            $table->integer('stock');
+            $table->integer('discount');
+            $table->timestamps();
+        });
+    }
+
+
+6) migration of review:
+
+ public function up()
+    {
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('customer');
+            $table->text('review');
+            $table->integer('star');
+            $table->bigInteger('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+7) php artisan migrate
