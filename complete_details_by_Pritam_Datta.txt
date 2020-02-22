@@ -107,4 +107,40 @@ public function run()
 	App/Model/Product::find(4) 
 	App/Model/Product::find(4)->reviews
 
-15) 
+#Creating API Resource / Transformer:
+
+15)Write this in the command prompt:
+	 php artisan make:resource Product/ProductCollection
+
+16)  Now to check all products; go to product controller and in index write:
+	return Product::all();
+
+17) Check this in the localhost's link: 
+	http://localhost:8000/api/products
+
+# Creating a new transformer:
+18) in command prompt: 
+	php artisan make:resource Product/ProductResource
+
+19) In productResouce.php file write:
+    public function toArray($request)
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->detail,
+            'price' => $this->price,
+            'stock' => $this->stock,
+            'discount' => $this->discount
+        ];
+    }
+
+20) In product controller:
+use App\Http\Resources\Product\ProductResource;
+
+public function show(Product $product)
+    {
+        return new ProductResource($product);
+    }
+
+21) open http://localhost:8000/api/products/4 and see how it transforms and showed data without
+showin created_at updated_at.
