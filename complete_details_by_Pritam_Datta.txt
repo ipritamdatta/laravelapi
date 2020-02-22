@@ -87,3 +87,24 @@ public function run()
 
 11) in command prompt write: 
 	php artisan db:seed
+
+#Creating Relationship
+
+12) In product model write:
+    public function reviews(){
+
+        return $this->hasMany(Review::class);
+    
+    }
+
+13) In review model write:
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
+
+14) To test the relationship, in command prompt write (Optional):
+	php artisan tinker
+	App/Model/Product::find(4) 
+	App/Model/Product::find(4)->reviews
+
+15) 
