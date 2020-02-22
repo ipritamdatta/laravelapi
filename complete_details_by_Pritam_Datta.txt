@@ -50,3 +50,40 @@ public function up()
     }
 
 7) php artisan migrate
+
+#Now we will seed our database using factory and seeder command:
+
+You can get faker related information from this github link: https://github.com/fzaninotto/Faker
+
+8) In Product factory write: 
+$factory->define(Product::class, function (Faker $faker) {
+    return [
+        'name' => $faker->word,
+        'detail' => $faker->paragraph,
+        'price' => $faker->numberBetween(100,1000),
+        'stock' => $faker->randomDigit,
+        'discount' => $faker->numberBetween(2,30)
+    ];
+});
+
+9)In review factory write: 
+$factory->define(Review::class, function (Faker $faker) {
+    return [
+        'product_id' => function(){
+            return Product::all()->random();
+        },
+        'customer' => $faker->name,
+        'review' => $faker->paragraph,
+        'star'  => $faker->numberBetween(0,5)
+    ];
+});
+10) In seeds-> databaseSeeder write:
+public function run()
+    {
+        // $this->call(UsersTableSeeder::class);
+        factory(App\Model\Product::class,50)->create();
+        factory(App\Model\Review::class,300)->create();
+    }
+
+11) in command prompt write: 
+	php artisan db:seed
