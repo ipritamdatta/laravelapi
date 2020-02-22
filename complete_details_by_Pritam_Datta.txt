@@ -190,3 +190,5 @@ rating so write:
                 'reviews' => route('reviews.index', $this->id)
             ]
         ];
+
+Till video number 9 DONE. START FROM VIDEO NUMBER 10
