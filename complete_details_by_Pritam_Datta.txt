@@ -144,3 +144,49 @@ public function show(Product $product)
 
 21) open http://localhost:8000/api/products/4 and see how it transforms and showed data without
 showin created_at updated_at.
+
+#Transforming Products
+
+22) To access particular product reviews as a link in json file:
+ In ProductResource.php write:
+return [
+            'name' => $this->name,
+            'description' => $this->detail,
+            'price' => $this->price,
+            'stock' => $this->stock,
+            'discount' => $this->discount,
+            'href' => [
+                'reviews' => route('reviews.index', $this->id)
+            ]
+        ];
+
+(write href part only)
+
+23) To see the rating by making a logic here we are summing up all the star and showing
+rating so write:
+         return [
+            'name' => $this->name,
+            'description' => $this->detail,
+            'price' => $this->price,
+            'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
+            'discount' => $this->discount,
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
+            'href' => [
+                'reviews' => route('reviews.index', $this->id)
+            ]
+        ];
+
+24) To make a logic for total price we can write:
+
+	return [
+            'name' => $this->name,
+            'description' => $this->detail,
+            'price' => $this->price,
+            'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
+            'discount' => $this->discount,
+            'totalPrice' => round((1- ($this->discount/100)) * $this->price,2),
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
+            'href' => [
+                'reviews' => route('reviews.index', $this->id)
+            ]
+        ];
