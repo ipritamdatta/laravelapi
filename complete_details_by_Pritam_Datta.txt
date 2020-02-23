@@ -351,6 +351,133 @@ In same way add a Review folder inside the EAPI collection and inside Review fol
 Get Request paste http://localhost:8000/api/products/4/reviews and save as Review All.
 
 
+#Configure passport package
+
+
+Laravel already makes it easy to perform authentication via traditional login forms, 
+but what about APIs? APIs typically use tokens to authenticate users and do not maintain session state between requests. 
+Laravel makes API authentication a breeze using Laravel Passport, which provides a full OAuth2 server implementation 
+for your Laravel application in a matter of minutes. 
+
+34) Now in the command prompt install laravel passport: 
+	composer require laravel/passport
+
+35) The Passport service provider registers its own database migration directory with the framework, so you should migrate your database after installing the package.
+ The Passport migrations will create the tables your application needs to store clients and access tokens:
+
+After installation run this,	php artisan migrate
+
+(See the tables in eapi database of your local server)
+
+36) run this command: php artisan passport:install
+
+This command will create the encryption keys needed to generate secure access tokens.
+You can see the tokens in the oauth_clients file of your local server.
+
+37) In User.php write: 
+
+class User extends Authenticatable
+{
+    use HasApiTokens, Notifiable;
+}
+
+38) In auth service provider write this: 
+use Laravel\Passport\Passport;
+
+public function boot()
+    {
+        $this->registerPolicies();
+
+        Passport::routes();
+    }
+
+
+39) In auth.php write:
+'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+    ],
+
+here we have written passport instead of token
+
+Open postman and create a folder named OAUTH inside EAPI
+and instead of GET request select POST request and paste this: http://localhost:8000/oauth/token/
+and in the Headers section write Accept in KEY and write application/json in VALUE.
+again, in the Headers section write Content-Type in KEY and write application/json in VALUE.
+
+40) In command prompt,
+ 	composer require laravel/ui
+	php artisan ui vue --auth
+
+then, npm install && npm run dev (if your register page can't find the design css)
+
+41) register as a new user in localhost. 
+
+Now in postman write go to body section of OAUTH folder and select Raw option. write:
+
+{
+	"grant_type" : "password",
+	"client_id": "2",
+	"client_secret" : "XlSQdAUeM315AFlFayrk35gWHaU1TO3zWtrD2Sdi",
+	"username" : "pritamdattashuvo@gmail.com",
+	"password" : "1234pritam"
+}
+
+and click send.
+
+Save this inside OAUTH folder naming Get Token.
+
+now copy the full access_token which is like 
+	eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJh....
+
+and to check if user is authenticated or not open another tab in postman and 
+select get request and paste it: http://localhost:8000/api/user
+and in header section write Accept, Content-Type, Authorization (unselect checkmark of authorization),
+and in the Value section write application/json. and random name and space paste the token
+Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJh....
+
+{Remember to write Bearer otherwise you will see unauthenticated all the time}
+
+This will unauthenticated as it is not registered
+
+
+Now, select the checkmark and click send, you will see who is authenticated user.
+
+
+
+Now, click right side setting button and create an envirnment named EAPI
+and select it.
+
+42) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
