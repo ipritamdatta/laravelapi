@@ -2,7 +2,10 @@
 [ 
 #to view data in json format you can you this google extension:
 	https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=bn
+
+#pre-requisite: basic knowledge of laravel. 
 ]
+
 
 LET'S BEGIN:
 
@@ -245,6 +248,21 @@ product resource as because we are returning from productcollection so do the fo
             'href' => route('products.show',$this->id)
         ];
 
+28) In ProductResource.php write:
+
+        return [
+            'name' => $this->name,
+            'description' => $this->detail,
+            'price' => $this->price,
+            'stock' => $this->stock == 0 ? 'Out of stock' : $this->stock,
+            'discount' => $this->discount,
+            'totalPrice' => round((1- ($this->discount/100)) * $this->price,2),
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
+            'href' => [
+                'reviews' => route('reviews.index', $this->id)
+            ]
+        ];
+
 NOW, In localhost:8000/api/products/ you will see that each data has some info
 and a link. When you click on that link you will be able to see the full details of that particular
 data.
@@ -252,3 +270,91 @@ data.
 
 Till now we have products to product details, to we will do product details to review details
 
+#Get Review API Resource: 
+Now, we will show the review for that particular product and obviously that has to be 
+transformed.
+
+
+29) Open command prompt and write:
+	php artisan make:resource ReviewResource
+
+30) In reviewController write:
+
+    use App\Model\Review;
+    public function index(Product $product)
+    {
+        return $product->reviews; //here the reviews came from product.php relationship
+    }
+
+(See the link http://localhost:8000/api/products/25/reviews)
+
+31) Now we want to show only customer, review and star in the particular id's review page. So,
+
+go to reviewResource and write:
+
+        return [
+            'customer' => $this->customer,
+            'body' => $this->review,
+            'star' => $this->star
+        ];
+
+and for this we have to declare that in the reviewController as well. So,
+
+32) Go to reviewController and write:
+
+import this: 
+	 use App\Http\Resources\ReviewResource;
+    
+    public function index(Product $product)
+    {
+        return ReviewResource::collection($product->reviews);
+    }
+
+(You can see the review of that particular product:        "http://localhost:8000/api/products/25/reviews")
+
+
+33) There can be so many products so let's do the pagination: 
+
+    In ProductController write: 
+
+    public function index()
+    {
+        // return ProductResource::collection(Product::all());
+        return ProductCollection::collection(Product::paginate(20));
+    }
+
+
+
+#get introduced to postman (Optional) but let's do this for better experience:
+
+install postman app: https://www.postman.com/
+
+ open postman
+
+and in the get method paste the link: http://localhost:8000/api/products and click send.
+This will show exactly the same as our browser.
+
+Create a collection in postman naming EAPI and inside that create a folder called Products.
+
+
+and inside Products folder we have http://localhost:8000/api/products/ this link in the 
+get request. so, 
+
+ click save and name the request as Product All. scroll below and
+select the Products folder. and click save.
+
+again, in the GET request write http://localhost:8000/api/products/4 and again
+click save as and name it like Product Show. select EAPI's Product and click save.
+
+
+In same way add a Review folder inside the EAPI collection and inside Review folder's 
+Get Request paste http://localhost:8000/api/products/4/reviews and save as Review All.
+
+
+
+
+
+{For any better solution
+please write your thought and way of solving problems;
+so that i can also improve myself. Keep learning, keep sharing,
+keep helping others.}
