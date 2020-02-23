@@ -1,4 +1,13 @@
+
+[ 
+#to view data in json format you can you this google extension:
+	https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=bn
+]
+
+LET'S BEGIN:
+
 1) create a laravel project
+
 2) created two model Product & Review with their respective factory,migration,seeder, controller using the following
 line of code:
 
@@ -107,6 +116,9 @@ public function run()
 	App/Model/Product::find(4) 
 	App/Model/Product::find(4)->reviews
 
+
+
+
 #Creating API Resource / Transformer:
 
 15)Write this in the command prompt:
@@ -191,4 +203,52 @@ rating so write:
             ]
         ];
 
-Till video number 9 DONE. START FROM VIDEO NUMBER 10
+
+
+
+#Product Collection Transforming
+
+
+We want to show name, total price, rating, href only  in the index page and when user clicks the href it will show the full 
+details of that product id.
+So let's begin: 
+
+
+25) Go to productCollection and instead of use Illuminate\Http\Resources\Json\ResourceCollection;
+write use Illuminate\Http\Resources\Json\Resource;
+
+and , instead of class ProductCollection extends ResourceCollection write 
+class ProductCollection extends Resource
+
+(because the Resource should match the ProductResource's Resource)
+
+26) In productController index write:
+
+    public function index()
+    {
+        return ProductCollection::collection(Product::all());
+    }
+
+and import this:
+	use App\Http\Resources\Product\ProductCollection;
+
+
+(Now, if you reload your localhost:8000/api/products you will not see the href of 
+product resource as because we are returning from productcollection so do the following number 27)
+
+27) In ProductCollection.php write:
+        return [
+            'name' => $this->name,
+            'totalPrice' => round((1- ($this->discount/100)) * $this->price,2),
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star')/$this->reviews->count(),2) : 'No rating yet',
+            'discount' => $this->discount,
+            'href' => route('products.show',$this->id)
+        ];
+
+NOW, In localhost:8000/api/products/ you will see that each data has some info
+and a link. When you click on that link you will be able to see the full details of that particular
+data.
+
+
+Till now we have products to product details, to we will do product details to review details
+
