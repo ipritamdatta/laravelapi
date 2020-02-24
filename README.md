@@ -467,4 +467,8 @@ write from
 # Handle Exceptions
   Error, Responses and Exceptions
 
+# Custom Exceptions
+
+
+
 
