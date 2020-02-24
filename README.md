@@ -428,7 +428,7 @@ Now in postman write go to body section of OAUTH folder and select Raw option. w
 	"client_id": "2",
 	"client_secret" : "XlSQdAUeM315AFlFayrk35gWHaU1TO3zWtrD2Sdi",
 	"username" : "pritamdattashuvo@gmail.com",
-	"password" : "1234pritam"
+	"password" : "mypassword"
 }
 
 and click send.
@@ -464,6 +464,7 @@ write from
 
 # Delete product
 
-
+# Handle Exceptions
+  Error, Responses and Exceptions
 
 
