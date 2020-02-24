@@ -456,11 +456,13 @@ Now, select the checkmark and click send, you will see who is authenticated user
 Now, click right side setting button and create an envirnment named EAPI
 and select it.
 
+write from 
 
 # Creating new product
 
+# Updating product
 
-Start from 13 number video. 
+# Delete product
 
 
 
